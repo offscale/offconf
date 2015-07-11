@@ -1,0 +1,8 @@
+{
+    "foo": "bar \"${env.jar}\" bar",
+    "bar": [
+        {
+            "can": "haz '${foo}' ${bar} \\${can_haz} haz $\\{jar}"
+        }
+    ]
+}

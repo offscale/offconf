@@ -1,0 +1,8 @@
+{
+    "foo": "bar \"CAN\" bar",
+    "bar": [
+        {
+            "can": "haz 'HAZ' BAR \\CAN_HAZ haz $\\{jar}"
+        }
+    ]
+}
