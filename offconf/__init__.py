@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-from os import environ
+from os import environ, path
 
 __author__ = 'Samuel Marks'
-__version__ = '0.0.1'
+__version__ = '0.0.2'
 
 
 def replace_variables(input_s, variables=None, extra_env=None):
@@ -39,7 +39,8 @@ def replace_variables(input_s, variables=None, extra_env=None):
         elif c == '}' and possible_var:
             possible_var += c
             var = possible_var[len('${'):-len('}')]
-            parsed_string += environ.get(var[len('env.'):], possible_var) \
+            parsed_string += ((lambda res: res.replace(path.sep, path.sep + path.sep) if path.sep == '\\' else res
+                               )(environ.get(var[len('env.'):], '')) or possible_var) \
                 if var.startswith('env.') else variables.get(var, possible_var)
             possible_var = ''
         elif possible_var:
