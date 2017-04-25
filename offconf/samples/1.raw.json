@@ -1,4 +1,5 @@
 {
     "foo": "bar \"${env.jar}\" bar",
-    "bar": "haz '${foo|b64encode}' ${bar} \\${can_haz} haz $\\{jar}"
+    "bar": "haz '${foo|b64encode}' ${bar} \\${can_haz} haz $\\{jar}",
+    "bzr": "${cool|append('bar')|prepend('can')}"
 }

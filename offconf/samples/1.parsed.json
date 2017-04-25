@@ -1,4 +1,5 @@
 {
     "foo": "bar \"CAN\" bar",
-    "bar": "haz 'Zm9v' BAR \\CAN_HAZ haz $\\{jar}"
+    "bar": "haz 'Zm9v' BAR \\CAN_HAZ haz $\\{jar}",
+    "bzr": "cancoolbar"
 }

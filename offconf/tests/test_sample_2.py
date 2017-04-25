@@ -3,13 +3,13 @@ from os import path
 from json import load, dumps
 from pkg_resources import resource_listdir, resource_filename
 
-from offconf import replace_variables, pipe
+from offconf import replace_variables
 
 
-class TestSample1(TestCase):
+class TestSample2(TestCase):
     @classmethod
     def setUpClass(cls):
-        filename = '1.raw.json'  # type: str
+        filename = '2.raw.json'  # type: str
         if filename not in resource_listdir('offconf', 'samples'):
             raise IOError('{filename} not found'.format(filename=filename))
 
@@ -21,8 +21,7 @@ class TestSample1(TestCase):
 
     def test_parsing(self):
         self.assertEqual(
-            replace_variables(dumps(self.sample), extra_env={'jar': 'CAN'},
-                              variables={'foo': 'HAZ', 'bar': 'BAR', 'can_haz': 'CAN_HAZ'}),
+            replace_variables(dumps(self.sample)),
             dumps(self.parsed_sample)
         )
 

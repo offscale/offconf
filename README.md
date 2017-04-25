@@ -2,6 +2,7 @@ offconf
 =======
 
 Replace variables like `${foo}` within files. Also works with environment variables `${env.bar}`.
+Now handles piping to given functions and, custom arrow functions also.
 
 See "CLI options" for how to provide additional normal+environment variables.
 

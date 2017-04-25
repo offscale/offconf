@@ -1,7 +1,7 @@
 from unittest import TestCase, main as unittest_main
-from os import environ, path
-from json import load, dumps, loads
-from pkg_resources import resource_listdir, resource_filename, get_distribution
+from os import  path
+from json import load, dumps
+from pkg_resources import resource_listdir, resource_filename
 
 from offconf import replace_variables
 
