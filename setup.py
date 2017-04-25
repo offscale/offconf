@@ -14,7 +14,6 @@ if __name__ == '__main__':
 
     samples_join, samples_install_dir = to_funcs('samples')
 
-
     get_vals = lambda var0, var1: imap(lambda buf: next(imap(lambda e: e.value.s, parse(buf).body)),
                                        ifilter(lambda line: line.startswith(var0) or line.startswith(var1), f))
 

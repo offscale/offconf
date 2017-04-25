@@ -1,15 +1,16 @@
+from base64 import b64decode, b64encode
 from unittest import TestCase, main as unittest_main
-from os import environ, path
-from json import load, dumps, loads
-from pkg_resources import resource_listdir, resource_filename, get_distribution
+from os import path
+from json import load, dumps
+from pkg_resources import resource_listdir, resource_filename
 
-from offconf import replace_variables
+from offconf import replace_variables, pipe
 
 
-class TestSample0(TestCase):
+class TestSample1(TestCase):
     @classmethod
     def setUpClass(cls):
-        filename = '0.raw.json'
+        filename = '1.raw.json'  # type: str
         if filename not in resource_listdir('offconf', 'samples'):
             raise IOError('{filename} not found'.format(filename=filename))
 
@@ -25,6 +26,9 @@ class TestSample0(TestCase):
                               variables={'foo': 'HAZ', 'bar': 'BAR', 'can_haz': 'CAN_HAZ'}),
             dumps(self.parsed_sample)
         )
+
+    def test_pipe(self):
+        self.assertEqual(pipe('foo|b64encode', {'b64encode': b64encode, 'b64decode': b64decode}), 'Zm9v')
 
 
 if __name__ == '__main__':

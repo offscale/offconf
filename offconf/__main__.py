@@ -7,6 +7,12 @@ from __init__ import replace_variables
 
 
 def _build_parser():
+    """
+    Build parser
+
+    :return parser object
+    :rtype `ArgumentParser`
+    """
     parser = ArgumentParser(description='Interpolate variables from file')
     parser.add_argument('-f', '--filename', help='Input file', required=True)
     parser.add_argument('-o', '--output-file', help='Output file', required=True)
