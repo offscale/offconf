@@ -5,7 +5,7 @@ from os import environ, path
 from itertools import takewhile
 
 __author__ = "Samuel Marks"
-__version__ = "0.0.4"
+__version__ = "0.0.5"
 
 funcs = {
     "b64encode": b64encode,
