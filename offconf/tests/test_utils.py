@@ -1,6 +1,7 @@
-from unittest import TestCase, main as unittest_main
+from unittest import TestCase
+from unittest import main as unittest_main
 
-from offconf import pipe, get_func, funcs
+from offconf import funcs, get_func, pipe
 
 
 class TestUtils(TestCase):

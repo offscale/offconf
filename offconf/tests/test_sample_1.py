@@ -1,9 +1,11 @@
-from unittest import TestCase, main as unittest_main
+from json import dumps, load
 from os import path
-from json import load, dumps
-from pkg_resources import resource_listdir, resource_filename
+from unittest import TestCase
+from unittest import main as unittest_main
 
-from offconf import replace_variables, pipe
+from pkg_resources import resource_filename, resource_listdir
+
+from offconf import replace_variables
 
 
 class TestSample1(TestCase):

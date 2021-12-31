@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
-from base64 import b64encode, b64decode
-from os import environ, path
+from base64 import b64decode, b64encode
 from itertools import takewhile
+from os import environ, path
 
 __author__ = "Samuel Marks"
 __version__ = "0.0.5"
