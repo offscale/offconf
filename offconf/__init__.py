@@ -1,11 +1,51 @@
 #!/usr/bin/env python
 
 from base64 import b64decode, b64encode
+from functools import partial
 from itertools import takewhile
 from os import environ, path
+from sys import version
+
+from offconf.py3_utils import call_ret_str, call_ret_str_cast_first_arg
 
 __author__ = "Samuel Marks"
-__version__ = "0.0.5"
+__version__ = "0.0.6"
+
+
+if version[0] == "3":
+    from functools import reduce
+
+    b64decode = partial(call_ret_str, b64decode)
+    b64encode = partial(call_ret_str_cast_first_arg, b64encode)
+
+    quote_paren_removing_table = str.maketrans("", "", "()'\"")
+
+    def remote_quotes_parens(s):
+        """
+        Remove quotes and parentheses and from input
+
+        :param s: Input string
+        :type s: ```str```
+
+        :return: Quote and parentheses free input
+        :rtype: ```str```
+        """
+        return s.translate(quote_paren_removing_table)
+
+else:
+
+    def remote_quotes_parens(s):
+        """
+        Remove quotes and parentheses and from input
+
+        :param s: Input string
+        :type s: ```str```
+
+        :return: Quote and parentheses free input
+        :rtype: ```str```
+        """
+        return str.translate(s, None, "()'\"")
+
 
 funcs = {
     "b64encode": b64encode,
@@ -133,7 +173,7 @@ def get_func(functions, expr, val_on_fail):
 
     return (
         (
-            parsed_functions[0](probable_f.translate(None, "()'\""))
+            parsed_functions[0](remote_quotes_parens(probable_f))
             if probable_f
             else parsed_functions[0]
         )
@@ -159,3 +199,6 @@ def arrow_to_lambda(arrow):
     return eval(
         "lambda {new_f}".format(new_f=arrow[1:].replace(")", "", 1).replace("=>", ":"))
     )
+
+
+__all__ = ["funcs", "parse", "pipe", "arrow_to_lambda"]
