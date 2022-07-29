@@ -5,7 +5,7 @@ from unittest import main as unittest_main
 
 from pkg_resources import resource_filename, resource_listdir
 
-from offconf import replace_variables
+from offconf import parse
 
 
 class TestSample0(TestCase):
@@ -30,7 +30,7 @@ class TestSample0(TestCase):
 
     def test_parsing(self):
         self.assertEqual(
-            replace_variables(
+            parse(
                 dumps(self.sample),
                 extra_env={"jar": "CAN"},
                 variables={"foo": "HAZ", "bar": "BAR", "can_haz": "CAN_HAZ"},

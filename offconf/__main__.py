@@ -3,7 +3,7 @@
 from argparse import ArgumentParser
 from json import loads
 
-from .__init__ import replace_variables
+from offconf import parse
 
 
 def _build_parser():
@@ -38,9 +38,7 @@ if __name__ == "__main__":
     if args.env_variables:
         args.env_variables = loads(args.env_variables)
 
-    output_s = replace_variables(
-        input_s, variables=args.variables, extra_env=args.env_variables
-    )
+    output_s = parse(input_s, variables=args.variables, extra_env=args.env_variables)
 
     with open(args.output_file, "w") as f:
         f.write(output_s)

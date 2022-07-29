@@ -5,7 +5,7 @@ from unittest import main as unittest_main
 
 from pkg_resources import resource_filename, resource_listdir
 
-from offconf import replace_variables
+from offconf import parse
 
 
 class TestSample2(TestCase):
@@ -29,9 +29,7 @@ class TestSample2(TestCase):
             cls.parsed_sample = load(f)
 
     def test_parsing(self):
-        self.assertEqual(
-            replace_variables(dumps(self.sample)), dumps(self.parsed_sample)
-        )
+        self.assertEqual(parse(dumps(self.sample)), dumps(self.parsed_sample))
 
 
 if __name__ == "__main__":

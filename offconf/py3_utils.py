@@ -1,15 +1,15 @@
-from operator import methodcaller
 from sys import version
 
 if version[0] == "3":
     from functools import partial
 
+    from six import ensure_str
+
     str_handler = partial(bytes, encoding="utf-8")
-    str_dammit = methodcaller("decode", encoding="utf8")
 
     def call_ret_str(f, *args, **kwargs):
         res = f(*args, **kwargs)
-        return str_dammit(res) if isinstance(res, bytes) else res
+        return ensure_str(res) if isinstance(res, bytes) else res
 
     def call_ret_str_cast_first_arg(f, *args, **kwargs):
         res = f(
@@ -20,7 +20,7 @@ if version[0] == "3":
             ),
             **kwargs
         )
-        return str_dammit(res) if isinstance(res, bytes) else res
+        return ensure_str(res) if isinstance(res, bytes) else res
 
 else:
 
@@ -30,8 +30,8 @@ else:
     def identity_func(f, *args, **kwargs):
         return f(*args, **kwargs)
 
-    str_dammit = str_handler = identity
+    str_handler = identity
     call_ret_str = call_ret_str_cast_first_arg = identity_func
 
 
-__all__ = ["str_handler", "str_dammit", "call_ret_str", "call_ret_str_cast_first_arg"]
+__all__ = ["str_handler", "call_ret_str", "call_ret_str_cast_first_arg"]

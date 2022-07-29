@@ -9,7 +9,7 @@ from sys import version
 from offconf.py3_utils import call_ret_str, call_ret_str_cast_first_arg
 
 __author__ = "Samuel Marks"
-__version__ = "0.0.6"
+__version__ = "0.0.7"
 
 
 if version[0] == "3":
@@ -63,7 +63,7 @@ funcs = {
 }
 
 
-def replace_variables(input_s, variables=None, extra_env=None, extra_funcs=None):
+def parse(input_s, variables=None, extra_env=None, extra_funcs=None):
     """
     Replace variables like ${foo} with matching from `variables`. Also works with environment variables ${env.bar}.
     Now handles piping to given functions and, custom arrow functions also.
@@ -128,9 +128,6 @@ def replace_variables(input_s, variables=None, extra_env=None, extra_funcs=None)
             parsed_string += c
 
     return parsed_string
-
-
-parse = replace_variables  # will deprecate `replace_variables` at some point
 
 
 def pipe(variables, functions):
