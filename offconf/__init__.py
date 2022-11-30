@@ -6,10 +6,12 @@ from itertools import takewhile
 from os import environ, path
 from sys import version
 
+from jsonref import jsonloader
+
 from offconf.py3_utils import call_ret_str, call_ret_str_cast_first_arg
 
 __author__ = "Samuel Marks"
-__version__ = "0.0.7"
+__version__ = "0.0.8"
 
 
 if version[0] == "3":
@@ -198,4 +200,26 @@ def arrow_to_lambda(arrow):
     )
 
 
-__all__ = ["funcs", "parse", "pipe", "arrow_to_lambda"]
+def jsonref_env_loader(uri):
+    """
+    Support this syntax `{"$ref": "env:ENV_VAR"}` to acquire environment variables
+    (fallsback to the default `jsonref.jsonloader`)
+
+    :param uri: URI
+    :type uri: ```str```
+
+    :return: JSON parsed result
+    :rtype: ```Union[dict, list, str, int, float, bool, None]```
+    """
+    if uri.startswith("env:"):
+        return environ[uri[4:]]
+    return jsonloader(uri)
+
+
+__all__ = [
+    "arrow_to_lambda",
+    "funcs",
+    "jsonref_env_loader",
+    "parse",
+    "pipe",
+]
