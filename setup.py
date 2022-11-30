@@ -87,6 +87,7 @@ if __name__ == "__main__":
         test_suite=package_name + ".tests",
         packages=find_packages(),
         package_dir={package_name: package_name},
+        install_requires=["six", "jsonref"],
         data_files=[
             (samples_install_dir(), list(map(samples_join, listdir(samples_join()))))
         ],
