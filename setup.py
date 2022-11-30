@@ -13,15 +13,28 @@ if version_info[0] == 2:
     from itertools import ifilter as filter
     from itertools import imap as map
 
+
+def to_funcs(*paths):
+    """
+    Produce function tuples that produce the local and install dir, respectively.
+
+    :param paths: one or more str, referring to relative folder names
+    :type paths: ```*paths```
+
+    :return: 2 functions
+    :rtype: ```Tuple[Callable[Optional[List[str]], str], Callable[Optional[List[str]], str]]```
+    """
+    return (
+        partial(path.join, path.dirname(__file__), package_name, *paths),
+        partial(path.join, get_python_lib(prefix=""), package_name, *paths),
+    )
+
+
 if __name__ == "__main__":
     package_name = "offconf"
 
     f_for = partial(path.join, path.dirname(__file__), package_name)
     d_for = partial(path.join, get_python_lib(), package_name)
-    to_funcs = lambda name: (
-        partial(path.join, f_for(name)),
-        partial(path.join, d_for(name)),
-    )
 
     samples_join, samples_install_dir = to_funcs("samples")
 
@@ -58,10 +71,18 @@ if __name__ == "__main__":
             "Intended Audience :: Developers",
             "Topic :: Software Development",
             "Topic :: Software Development :: Libraries :: Python Modules",
+            "License :: CC0 1.0 Universal (CC0 1.0) Public Domain Dedication"
             "License :: OSI Approved :: MIT License",
             "License :: OSI Approved :: Apache Software License",
             "Programming Language :: Python",
             "Programming Language :: Python :: 2.7",
+            "Programming Language :: Python :: 3",
+            "Programming Language :: Python :: 3.6",
+            "Programming Language :: Python :: 3.7",
+            "Programming Language :: Python :: 3.8",
+            "Programming Language :: Python :: 3.9",
+            "Programming Language :: Python :: 3.10",
+            "Programming Language :: Python :: 3.11",
         ],
         test_suite=package_name + ".tests",
         packages=find_packages(),
