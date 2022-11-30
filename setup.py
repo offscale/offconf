@@ -1,17 +1,27 @@
 # -*- coding: utf-8 -*-
 
-from ast import parse
+"""
+setup.py implementation, interesting because it parsed the first __init__.py and
+    extracts the `__author__` and `__version__`
+"""
+
+from ast import Assign, Constant, Str, parse
 from distutils.sysconfig import get_python_lib
 from functools import partial
-from operator import attrgetter, itemgetter
+from operator import attrgetter
 from os import listdir, path
-from sys import version_info
+from os.path import extsep
 
 from setuptools import find_packages, setup
 
-if version_info[0] == 2:
-    from itertools import ifilter as filter
-    from itertools import imap as map
+package_name = "offconf"
+
+with open(
+    path.join(path.dirname(__file__), "README{extsep}md".format(extsep=extsep)),
+    "rt",
+    encoding="utf-8",
+) as fh:
+    long_description = fh.read()
 
 
 def to_funcs(*paths):
@@ -30,42 +40,42 @@ def to_funcs(*paths):
     )
 
 
-if __name__ == "__main__":
-    package_name = "offconf"
+def main():
+    """Main function for setup.py; this actually does the installation"""
+    with open(
+        path.join(
+            path.abspath(path.dirname(__file__)),
+            package_name,
+            "__init__{extsep}py".format(extsep=extsep),
+        )
+    ) as f:
+        parsed_init = parse(f.read())
 
-    f_for = partial(path.join, path.dirname(__file__), package_name)
-    d_for = partial(path.join, get_python_lib(), package_name)
-
-    samples_join, samples_install_dir = to_funcs("samples")
-
-    with open(path.join(package_name, "__init__.py")) as f:
-        __author__, __version__ = map(
-            lambda const: const.value if hasattr(const, "value") else const.s,
+    __author__, __version__, __description__ = map(
+        lambda node: node.value if isinstance(node, Constant) else node.s,
+        filter(
+            lambda node: isinstance(node, (Constant, Str)),
             map(
                 attrgetter("value"),
-                map(
-                    itemgetter(0),
-                    map(
-                        attrgetter("body"),
-                        map(
-                            parse,
-                            filter(
-                                lambda line: line.startswith("__version__")
-                                or line.startswith("__author__"),
-                                f,
-                            ),
-                        ),
-                    ),
-                ),
+                filter(lambda node: isinstance(node, Assign), parsed_init.body),
             ),
-        )
+        ),
+    )
+
+    samples_join, samples_install_dir = to_funcs("samples")
 
     setup(
         name=package_name,
         author=__author__,
+        author_email="807580+SamuelMarks@users.noreply.github.com",
         version=__version__,
-        description="Replace variables like `${foo}` within files. Environment variables `${env.bar}`, "
-        "handles piping to given functions and, custom arrow functions also.",
+        description=__description__,
+        long_description=long_description,
+        long_description_content_type="text/markdown",
+        install_requires=["six", "jsonref"],
+        test_suite="{}.tests".format(package_name),
+        packages=find_packages(),
+        package_dir={package_name: package_name},
         classifiers=[
             "Development Status :: 7 - Inactive",
             "Intended Audience :: Developers",
@@ -77,6 +87,8 @@ if __name__ == "__main__":
             "Programming Language :: Python",
             "Programming Language :: Python :: 2.7",
             "Programming Language :: Python :: 3",
+            "Programming Language :: Python :: 3.4",
+            "Programming Language :: Python :: 3.5",
             "Programming Language :: Python :: 3.6",
             "Programming Language :: Python :: 3.7",
             "Programming Language :: Python :: 3.8",
@@ -84,11 +96,17 @@ if __name__ == "__main__":
             "Programming Language :: Python :: 3.10",
             "Programming Language :: Python :: 3.11",
         ],
-        test_suite=package_name + ".tests",
-        packages=find_packages(),
-        package_dir={package_name: package_name},
-        install_requires=["six", "jsonref"],
+        url="https://github.com/offscale/{}".format(package_name),
         data_files=[
             (samples_install_dir(), list(map(samples_join, listdir(samples_join()))))
         ],
     )
+
+
+def setup_py_main():
+    """Calls main if `__name__ == '__main__'`"""
+    if __name__ == "__main__":
+        main()
+
+
+setup_py_main()

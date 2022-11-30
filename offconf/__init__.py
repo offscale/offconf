@@ -12,6 +12,10 @@ from offconf.py3_utils import call_ret_str, call_ret_str_cast_first_arg
 
 __author__ = "Samuel Marks"
 __version__ = "0.0.8"
+__description__ = (
+    "Replace variables like `${foo}` within files. "
+    "Environment variables `${env.bar}`, handles piping to given functions and, custom arrow functions also."
+)
 
 
 if version[0] == "3":
