@@ -16,14 +16,17 @@ from sys import version_info
 from setuptools import find_packages, setup
 
 if version_info[0] == 2:
-    from ast import expr
     from itertools import ifilter as filter
     from itertools import imap as map
 
-    # Constant for 2.7. Will never be used
-    Constant = type("Constant", (expr,), {})
-else:
+if version_info[:2] > (3, 7):
     from ast import Constant
+else:
+    from ast import expr
+
+    # Constant. Will never be used in Python =< 3.8
+    Constant = type("Constant", (expr,), {})
+
 
 package_name = "offconf"
 
