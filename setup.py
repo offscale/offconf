@@ -5,21 +5,31 @@ setup.py implementation, interesting because it parsed the first __init__.py and
     extracts the `__author__` and `__version__`
 """
 
-from ast import Assign, Constant, Str, parse
+from ast import Assign, Str, parse
 from distutils.sysconfig import get_python_lib
 from functools import partial
 from operator import attrgetter
 from os import listdir, path
 from os.path import extsep
+from sys import version_info
 
 from setuptools import find_packages, setup
+
+if version_info[0] == 2:
+    from ast import expr
+    from itertools import ifilter as filter
+    from itertools import imap as map
+
+    # Constant for 2.7. Will never be used
+    Constant = type("Constant", (expr,), {})
+else:
+    from ast import Constant
 
 package_name = "offconf"
 
 with open(
     path.join(path.dirname(__file__), "README{extsep}md".format(extsep=extsep)),
     "rt",
-    encoding="utf-8",
 ) as fh:
     long_description = fh.read()
 

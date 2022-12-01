@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """
 Shared utility functions used by many tests
 """

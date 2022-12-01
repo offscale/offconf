@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from json import dumps, load
 from os import path
 from unittest import TestCase
