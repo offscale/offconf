@@ -7,55 +7,15 @@ Tests for setup.py
 from operator import methodcaller
 from os import path
 from os.path import extsep
-from sys import modules, version_info
+from sys import version_info
 from unittest import TestCase
 
-from offconf.tests.utils_for_tests import unittest_main
+from offconf.tests.utils_for_tests import exec_mod_and_return, unittest_main
 
 if version_info[0] == 2:
-    from imp import load_source
-
     from mock import MagicMock, patch
-
-    def exec_mod_and_return(modname, filepath):
-        """
-        Execute module, add it to `sys.modules`, and return it
-
-        :param modname: Module name
-        :type modname: ```str```
-
-        :param filepath: Filepath
-        :type filepath: ```str```
-
-        :return: The module
-        """
-        modules[modname] = load_source(modname, filepath)
-        return modules[modname]
-
 else:
-    from importlib.machinery import SourceFileLoader
-    from importlib.util import module_from_spec, spec_from_loader
     from unittest.mock import MagicMock, patch
-
-    def exec_mod_and_return(modname, filepath):
-        """
-        Execute module, add it to `sys.modules`, and return it
-
-        :param modname: Module name
-        :type modname: ```str```
-
-        :param filepath: Filepath
-        :type filepath: ```str```
-
-        :return: The module
-        """
-        loader = SourceFileLoader(
-            modname,
-            filepath,
-        )
-        modules[modname] = module_from_spec(spec_from_loader(loader.name, loader))
-        loader.exec_module(modules[modname])
-        return modules[modname]
 
 
 class TestSetupPy(TestCase):

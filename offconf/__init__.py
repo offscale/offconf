@@ -222,6 +222,9 @@ def jsonref_env_loader(uri):
 
 
 __all__ = [
+    "__author__",
+    "__description__",
+    "__version__",
     "arrow_to_lambda",
     "funcs",
     "jsonref_env_loader",
