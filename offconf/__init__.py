@@ -3,6 +3,7 @@
 
 from base64 import b64decode, b64encode
 from functools import partial
+from importlib import import_module
 from itertools import takewhile
 from os import environ, path
 from sys import version
@@ -76,11 +77,14 @@ def parse(input_s, variables=None, extra_env=None, extra_funcs=None):
     Now handles piping to given functions and, custom arrow functions also.
 
     :param input_s: input string
-    :type input_s: `str|unicode`
+    :type input_s: `Union[str,unicode]`
+
     :param variables: context of variables
     :type variables: `dict`
+
     :param extra_env: extra environment variables
     :type extra_env: `dict`
+
     :param extra_funcs: dictionary of functions, currently just used for pipes `|`
     :type extra_funcs: `dict`
 
@@ -205,6 +209,40 @@ def arrow_to_lambda(arrow):
     )
 
 
+def f_from_mod(mod_str):
+    """
+    :param mod_str: Module str (with dot)
+    :type mod_str: ```str```
+
+    :return: Function found at the the module, e.g, `dump` from `mod_str=json.dump`
+    :rtype: ```Callable```
+    """
+    ld = mod_str.rfind(".")
+    return getattr(import_module(mod_str[:ld]), mod_str[ld + 1 :])
+
+
+def handle_pipe(typ, uri, on_first):
+    """
+    Handle pipe
+
+    :param typ: Type
+    :type typ: ```str```
+
+    :param uri: URI
+    :type uri: ```str```
+
+    :param on_first:
+    :type on_first: ```Callable[[str], str]```
+
+    :return: The doc
+    :rtype: ```str```
+    """
+    comps = [comp.strip() for comp in uri.split("|")]
+    pfst = on_first(comps.pop(0)[len(typ) :])
+    base_doc = reduce(lambda i, f: f_from_mod(f)(i), comps, pfst)
+    return base_doc
+
+
 def jsonref_env_loader(uri):
     """
     Support this syntax `{"$ref": "env:ENV_VAR"}` to acquire environment variables
@@ -217,7 +255,8 @@ def jsonref_env_loader(uri):
     :rtype: ```Union[dict, list, str, int, float, bool, None]```
     """
     if uri.startswith("env:"):
-        return environ[uri[4:]]
+        return handle_pipe("env:", uri, environ.__getitem__) if "|" in uri else environ[uri[4:]]
+
     return jsonloader(uri)
 
 
