@@ -13,7 +13,7 @@ from jsonref import jsonloader
 from offconf.py3_utils import call_ret_str, call_ret_str_cast_first_arg
 
 __author__ = "Samuel Marks"
-__version__ = "0.0.8"
+__version__ = "0.0.9"
 __description__ = (
     "Replace variables like `${foo}` within files. "
     "Environment variables `${env.bar}`, handles piping to given functions and, custom arrow functions also."
@@ -255,7 +255,11 @@ def jsonref_env_loader(uri):
     :rtype: ```Union[dict, list, str, int, float, bool, None]```
     """
     if uri.startswith("env:"):
-        return handle_pipe("env:", uri, environ.__getitem__) if "|" in uri else environ[uri[4:]]
+        return (
+            handle_pipe("env:", uri, environ.__getitem__)
+            if "|" in uri
+            else environ[uri[4:]]
+        )
 
     return jsonloader(uri)
 

@@ -4,11 +4,6 @@ from argparse import ArgumentParser
 from sys import version_info
 from unittest import TestCase
 
-if version_info[0] == 2:
-    pass
-else:
-    pass
-
 from offconf import __description__, __version__
 from offconf.__main__ import _build_parser
 from offconf.tests.utils_for_tests import run_cli_test, unittest_main
