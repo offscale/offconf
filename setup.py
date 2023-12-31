@@ -5,7 +5,7 @@ setup.py implementation, interesting because it parsed the first __init__.py and
     extracts the `__author__` and `__version__`
 """
 
-from ast import Assign, Str, parse
+from ast import Assign, Name, parse
 from functools import partial
 from operator import attrgetter
 from os import listdir, path
@@ -80,9 +80,10 @@ if sys.version_info[:2] >= (3, 12):
                 "I don't know where Python installs its library "
                 "on platform '%s'" % os.name
             )
-
+    from ast import Del as Str
 else:
     from distutils.sysconfig import get_python_lib
+    from ast import Str
 
 if sys.version_info[0] == 2:
     from itertools import ifilter as filter
@@ -97,7 +98,8 @@ else:
     Constant = type("Constant", (expr,), {})
 
 
-package_name = "offconf"
+package_name_verbatim = "offconf"
+package_name = package_name_verbatim.replace("-", "_")
 
 with open(
     path.join(path.dirname(__file__), "README{extsep}md".format(extsep=extsep)),
@@ -139,7 +141,19 @@ def main():
             lambda node: isinstance(node, (Constant, Str)),
             map(
                 attrgetter("value"),
-                filter(lambda node: isinstance(node, Assign), parsed_init.body),
+                filter(
+                    lambda node: isinstance(node, Assign)
+                    and any(
+                        filter(
+                            lambda name: isinstance(name, Name) and name.id
+                            in frozenset(
+                                ("__author__", "__version__", "__description__")
+                            ),
+                            node.targets,
+                        )
+                    ),
+                    parsed_init.body,
+                ),
             ),
         ),
     )
@@ -147,7 +161,7 @@ def main():
     samples_join, samples_install_dir = to_funcs("samples")
 
     setup(
-        name=package_name,
+        name=package_name_verbatim,
         author=__author__,
         author_email="807580+SamuelMarks@users.noreply.github.com",
         version=__version__,
@@ -155,7 +169,7 @@ def main():
         long_description=long_description,
         long_description_content_type="text/markdown",
         install_requires=["six", "jsonref"],
-        test_suite="{}.tests".format(package_name),
+        test_suite="{}{}tests".format(package_name, path.extsep),
         packages=find_packages(),
         package_dir={package_name: package_name},
         classifiers=[
@@ -163,13 +177,13 @@ def main():
             "Intended Audience :: Developers",
             "Topic :: Software Development",
             "Topic :: Software Development :: Libraries :: Python Modules",
-            "License :: CC0 1.0 Universal (CC0 1.0) Public Domain Dedication"
-            "License :: OSI Approved :: MIT License",
+            "License :: CC0 1.0 Universal (CC0 1.0) Public Domain Dedication",
             "License :: OSI Approved :: Apache Software License",
+            "License :: OSI Approved :: MIT License",
             "Programming Language :: Python",
+            "Programming Language :: Python :: 2",
             "Programming Language :: Python :: 2.7",
             "Programming Language :: Python :: 3",
-            "Programming Language :: Python :: 3.4",
             "Programming Language :: Python :: 3.5",
             "Programming Language :: Python :: 3.6",
             "Programming Language :: Python :: 3.7",
@@ -177,6 +191,7 @@ def main():
             "Programming Language :: Python :: 3.9",
             "Programming Language :: Python :: 3.10",
             "Programming Language :: Python :: 3.11",
+            "Programming Language :: Python :: 3.12",
         ],
         url="https://github.com/offscale/{}".format(package_name),
         data_files=[
