@@ -3,6 +3,7 @@
 """
 Shared utility functions used by many tests
 """
+
 from functools import partial
 from sys import modules, version_info
 from unittest import main
@@ -128,7 +129,7 @@ def run_cli_test(
 
 
 def unittest_main():
-    """Runs unittest.main if __main__"""
+    """Runs `unittest.main` `if __main__`"""
     if __name__ == "__main__":
         main()
 
