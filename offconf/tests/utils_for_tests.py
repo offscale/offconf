@@ -106,9 +106,11 @@ def run_cli_test(
                 args = main_f()
     if exit_code is not None:
         test_case_instance.assertEqual(
-            *(e.exception.code, exception(exit_code).code)
-            if exception is SystemExit
-            else (str(e.exception), output)
+            *(
+                (e.exception.code, exception(exit_code).code)
+                if exception is SystemExit
+                else (str(e.exception), output)
+            )
         )
     if exception is not SystemExit:
         pass

@@ -121,16 +121,18 @@ def parse(input_s, variables=None, extra_env=None, extra_funcs=None):
             parsed_string += "{}".format(
                 (
                     (
-                        lambda res: res.replace(path.sep, path.sep + path.sep)
-                        if path.sep == "\\"
-                        else res
+                        lambda res: (
+                            res.replace(path.sep, path.sep + path.sep)
+                            if path.sep == "\\"
+                            else res
+                        )
                     )(environ.get(var[len("env.") :], ""))
                     or possible_var
                 )
                 if var.startswith("env.")
-                else pipe(var, funcs)
-                if "|" in var
-                else variables.get(var, possible_var)
+                else (
+                    pipe(var, funcs) if "|" in var else variables.get(var, possible_var)
+                )
             )
             possible_var = ""
         elif possible_var:

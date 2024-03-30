@@ -8,7 +8,7 @@ setup.py implementation, interesting because it parsed the first __init__.py and
 import sys
 from ast import Assign, Name, parse
 from functools import partial
-from operator import attrgetter
+from operator import attrgetter, getitem, itemgetter, methodcaller
 from os import listdir, path
 from os.path import extsep
 
@@ -191,16 +191,22 @@ def main():
             "Programming Language :: Python :: 3.10",
             "Programming Language :: Python :: 3.11",
             "Programming Language :: Python :: 3.12",
+            "Programming Language :: Python :: 3.13",
         ],
         license="(Apache-2.0 OR MIT OR CC0-1.0)",
         license_files=["LICENSE-APACHE", "LICENSE-MIT", "LICENSE-CC0"],
         test_suite="{}{}tests".format(package_name, path.extsep),
         packages=find_packages(),
-        package_dir={package_name: package_name},
+        package_dir={package_name: package_name, "samples": "samples"},
         install_requires=["six", "jsonref"],
-        data_files=[
-            (samples_install_dir(), list(map(samples_join, listdir(samples_join()))))
-        ],
+        package_data={
+            "samples": list(
+                map(
+                    partial(path.join, package_name, "samples"), listdir(samples_join())
+                )
+            )
+        },
+        include_package_data=True,
     )
 
 
