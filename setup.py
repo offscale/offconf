@@ -8,6 +8,7 @@ setup.py implementation, interesting because it parsed the first __init__.py and
 import sys
 from ast import Assign, Name, parse
 from functools import partial
+from itertools import chain
 from operator import attrgetter
 from os import listdir, path
 from os.path import extsep
@@ -20,9 +21,9 @@ if sys.version_info[:2] >= (3, 12):
 else:
     from ast import Str
 
-if sys.version_info[0] == 2:
-    from itertools import ifilter as filter
-    from itertools import imap as map
+    if sys.version_info[0] == 2:
+        from itertools import ifilter as filter
+        from itertools import imap as map
 
 if sys.version_info[:2] > (3, 7):
     from ast import Constant
