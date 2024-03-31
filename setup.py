@@ -7,9 +7,11 @@ setup.py implementation, interesting because it parsed the first __init__.py and
 
 import sys
 from ast import Assign, Name, parse
+from functools import partial
 from operator import attrgetter
 from os import listdir, path
 from os.path import extsep
+from itertools import chain
 
 from setuptools import find_packages, setup
 
@@ -111,7 +113,19 @@ def main():
         test_suite="{}{}tests".format(package_name, path.extsep),
         packages=find_packages(),
         install_requires=["six", "jsonref"],
-        package_name={package_name: listdir(path.join(package_name_verbatim, "samples"))},
+        package_data={
+            package_name: list(
+                chain.from_iterable(
+                    map(
+                        lambda folder: map(
+                            partial(path.join, folder),
+                            listdir(path.join(package_name_verbatim, folder)),
+                        ),
+                        ("samples",),
+                    )
+                )
+            )
+        },
         include_package_data=True,
     )
 
