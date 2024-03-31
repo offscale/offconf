@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """ Tests for CLI (__main__.py) """
 
 from argparse import ArgumentParser

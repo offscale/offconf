@@ -1,5 +1,5 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
 
 from base64 import b64decode, b64encode
 from functools import partial
