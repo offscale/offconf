@@ -8,7 +8,6 @@ setup.py implementation, interesting because it parsed the first __init__.py and
 import sys
 from ast import Assign, Name, parse
 from functools import partial
-from itertools import chain
 from operator import attrgetter
 from os import listdir, path
 from os.path import extsep
@@ -41,6 +40,19 @@ with open(
     path.join(path.dirname(__file__), "README{extsep}md".format(extsep=extsep)), "rt"
 ) as fh:
     long_description = fh.read()
+
+
+def gen_join_on_pkg_name(*paths):
+    """
+    Create a function that joins on `os.path.join` from the package name onward
+
+    :param paths: one or more str, referring to relative folder names
+    :type paths: ```*paths```
+
+    :return: function that joins on `os.path.join` from the package name onward
+    :rtype: ```Callable[tuple[str, ...], str]```
+    """
+    return partial(path.join, path.dirname(__file__), package_name, *paths)
 
 
 def main():
@@ -77,6 +89,8 @@ def main():
             ),
         ),
     )
+
+    samples_join = gen_join_on_pkg_name("samples")
 
     setup(
         name=package_name_verbatim,
@@ -118,11 +132,11 @@ def main():
             package_name: list(
                 chain.from_iterable(
                     map(
-                        lambda folder: map(
-                            partial(path.join, folder),
-                            listdir(path.join(package_name_verbatim, folder)),
+                        lambda folder_join: map(
+                            folder_join,
+                            listdir(folder_join()),
                         ),
-                        ("samples",),
+                        (samples_join,),
                     )
                 )
             )
